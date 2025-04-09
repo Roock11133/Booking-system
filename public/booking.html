@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Book Ticket</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="form-container">
+    <h2>🎟️ Book Your Ticket</h2>
+    <div class="movie-info-display">
+      <div>
+        <label>🎬 Movie:</label><br>
+        <div id="movie_name_display" class="info-box"></div>
+      </div>
+      <div>
+        <label>🕒 Show Time:</label><br>
+        <div id="show_time_display" class="info-box"></div>
+      </div>
+      <div>
+        <label>🎦 Screen:</label><br>
+        <div id="screen_display" class="info-box"></div>
+      </div>
+    </div>
+
+    <input type="text" id="ticket_no" placeholder="Ticket Number">
+    <input type="date" id="movie_date">
+    <button onclick="bookTicket()">Book Now</button>
+    <button onclick="goBack()">Back</button>
+  </div>
+
+  <script>
+    const userId = localStorage.getItem('userId');
+    const params = new URLSearchParams(window.location.search);
+    const movie_name = params.get('name');
+    const show_time = params.get('time');
+    const screen_no = params.get('screen');
+
+    window.onload = () => {
+      document.getElementById('movie_name_display').textContent = movie_name;
+      document.getElementById('show_time_display').textContent = show_time;
+      document.getElementById('screen_display').textContent = screen_no;
+    };
+
+    function bookTicket() {
+      const body = {
+        ticket_no: document.getElementById('ticket_no').value,
+        movie_name,
+        show_time,
+        movie_date: document.getElementById('movie_date').value,
+        screen_no,
+        user_id: userId
+      };
+
+      fetch('http://localhost:3000/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }).then(() => {
+        alert('🎉 Ticket Booked!');
+        window.location.href = 'dashboard.html';
+      });
+    }
+
+    function goBack() {
+      window.location.href = 'dashboard.html';
+    }
+  </script>
+
+</body>
+
+</html>
